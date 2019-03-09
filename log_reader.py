@@ -31,7 +31,14 @@ if __name__ == "__main__":
     plt.figure(1)
 
     x = df['time']
-    y = df['voltage']
+    y = df['rio_cpu']
+
+    # Interesting logs:
+    # 1. CPU
+    # 2. PDP Usage
+    # 3. Brownouts, disabled problems, states
+
+    #Add coloring for robot disabled, robot browned out, watchdog, ds_disabled
 
     # Get the background color right - First create the target background color array
     disabled = np.asarray([1 if r else 0 for r in df['robot_disabled']], dtype=np.int)
@@ -45,7 +52,5 @@ if __name__ == "__main__":
     ax = plt.plot(x, y, 'k-')
     plt.waitforbuttonpress()
 
-    # for v in voltage:
-    #     print(v)
-    # print("Done")
+    print(y)
 
