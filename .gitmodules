@@ -1,0 +1,3 @@
+[submodule "dslog2csv"]
+	path = dslog2csv
+	url = git@github.com:ligerbots/dslog2csv.git
