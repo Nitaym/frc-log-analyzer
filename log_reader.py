@@ -39,8 +39,8 @@ def find_relevant_time(records):
 
         ranges_size = np.asarray([r[1] - r[0] for r in ranges], dtype=np.int)
         
-        sometimes we see short disabled samples - I've only seen one disabled in a row for now, but ' \
-        the enabled contiues after that. I need to take that into account'
+        # sometimes we see short disabled samples - I've only seen one disabled in a row for now, but ' \
+        # the enabled contiues after that. I need to take that into account'
 
         return ranges[np.argmax(ranges_size)]
 
@@ -61,7 +61,7 @@ def find_relevant_time(records):
 
 
 logs_folder = 'f:/Users/Nitay/Dropbox/Work/First FRC/2019/Logs/District 1/Day 1/'
-log_filename = '2019_03_04 17_17_20 Mon.dslog'
+log_filename = '2019_03_04 16_19_26 Mon.dslog'
 events_filename = log_filename.replace('dslog', 'dsevents')
 
 analyzers = []
@@ -82,13 +82,13 @@ if __name__ == "__main__":
     elapsed = time.time() - start
     print("Done [Took %2.2f seconds]" % elapsed)
 
-    plotter.plot_voltage_current(df)
-    relevant_period = find_relevant_time(df)
-
-    load_analyzers()
     print(read_event_name(logs_folder + events_filename))
-
-    analyze(df)
+    plotter.plot_all(df)
+    # relevant_period = find_relevant_time(df)
+    #
+    # load_analyzers()
+    #
+    # analyze(df)
 
 
 
