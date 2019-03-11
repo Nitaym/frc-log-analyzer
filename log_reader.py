@@ -1,3 +1,4 @@
+import glob
 import time
 import struct
 from datetime import datetime
@@ -60,12 +61,26 @@ def find_relevant_time(records):
         return [enabled_period[0], stop_index]
 
 
-logs_folder = 'f:/Users/Nitay/Dropbox/Work/First FRC/2019/Logs/District 1/Day 1/'
-log_filename = '2019_03_04 16_19_26 Mon.dslog'
+def save_graph(filename):
+    print("Reading data...", end="", flush=True)
+    start = time.time()
+    parser = DSLogParser(filename)
+    records = parser.read_records()
+    df = pd.DataFrame(records)
+    elapsed = time.time() - start
+    print("Done [Took %2.2f seconds]" % elapsed)
+
+    print(read_event_name(logs_folder + events_filename))
+    plotter.plot_all(df, save=True, show=True, log_name=filename)
+
+
+
+logs_folder = 'C:/Users/Sketch Bros 2/Documents/Programming/frc-log-analyzer/Logs/White night 20190308/'
+#logs_folder = 'Logs/White night 20190308/'
+log_filename = '2019_03_08 03_34_49 Fri.dslog'
 events_filename = log_filename.replace('dslog', 'dsevents')
 
 analyzers = []
-
 
 if __name__ == "__main__":
     # s = [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1]
@@ -74,21 +89,23 @@ if __name__ == "__main__":
     # Set this to false if you want to see disabled periods
     IGNORE_DISBALED = True
 
-    print("Reading data...", end="", flush=True)
-    start = time.time()
-    parser = DSLogParser(logs_folder + log_filename)
-    records = parser.read_records()
-    df = pd.DataFrame(records)
-    elapsed = time.time() - start
-    print("Done [Took %2.2f seconds]" % elapsed)
-
-    print(read_event_name(logs_folder + events_filename))
-    plotter.plot_all(df)
+    file = logs_folder + log_filename
+    save_graph(file)
+    # for file in glob.glob(logs_folder + '*.dslog'):
+    #     print(file)
+    #     save_graph(file)
+    # print("Reading data...", end="", flush=True)
+    # start = time.time()
+    # parser = DSLogParser(logs_folder + log_filename)
+    # records = parser.read_records()
+    # df = pd.DataFrame(records)
+    # elapsed = time.time() - start
+    # print("Done [Took %2.2f seconds]" % elapsed)
+    #
+    # print(read_event_name(logs_folder + events_filename))
+    # plotter.plot_all(df, logs_folder + log_filename)
     # relevant_period = find_relevant_time(df)
     #
     # load_analyzers()
     #
     # analyze(df)
-
-
-

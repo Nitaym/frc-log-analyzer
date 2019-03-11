@@ -27,43 +27,56 @@ def plot_voltage_current(records):
     plt.show()
 
 
-def plot_all(records):
+def plot_all(records, save=False, show=True, log_name=''):
     names = ['0 ',
-             '1 Drive',
-             '2 Drive',
-             '3 Drive',
+             '1 Drive Left',
+             '2 Drive Left',
+             '3 Drive Left',
              '4 Climb Leg',
-             '5 Arm',
-             '6 ?',
-             '7 --Arm--',
-             '8 ?',
-             '9 Elevator',
-             '10 Collector',
+             '5 Collector',
+             '6 Elevator',
+             '7 Arm Right',
+             '8 Pivot',
+             '9 Claw',
+             '10 Arm Left',
              '11 Climb Leg',
-             '12 Drive',
-             '13 Drive',
-             '14 Drive',
+             '12 Drive Right',
+             '13 Drive Right',
+             '14 Drive Right',
              '15 Spare']
+    plt.figure()
+    plt.title(log_name)
     for i in range(16):
         voltage_color = 'red'
         current_color = 'blue'
         ax1 = plt.subplot(4, 4, i+1)
+
+        time = records['time']
+        time = time / 1000
+
+        voltage = [0 if v > 30 else v for v in records['voltage']]
+
         # Plot the data
-        ax1.plot(records['time'], records['voltage'], color=voltage_color)
+        ax1.plot(time, voltage, color=voltage_color)
         # ax1.set_xlabel('Time')
         # ax1.set_ylabel('Voltage', color=voltage_color)
         ax1.tick_params(axis='y', labelcolor=voltage_color)
         ax2 = ax1.twinx()
 
         currents = records['pdp_currents']
-        current = [c[i] for c in currents]
-        ax2.plot(records['time'], current, color=current_color)
+        current = [c[15-i] for c in currents]
+        ax2.plot(time, current, color=current_color)
         ax2.set_ylabel(names[i], color=current_color)
         ax2.tick_params(axis='y', labelcolor=current_color)
 
         # make_frc_plot('Voltage vs Current', records)
+        # plt.tight_layout()
+    if show:
+        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
+        plt.show()
+    if save:
+        plt.savefig(log_name + '.png', dpi=200)
 
-    plt.show()
 
 
 def plot_voltage_current_specific(records, pdp_number, pdp_name):
