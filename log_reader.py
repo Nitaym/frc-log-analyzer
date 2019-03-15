@@ -9,16 +9,8 @@ from analyzers.current_usage import CurrentUsageAnalyzer
 import matplotlib.pyplot as plt
 import numpy as np
 import plotter
-
-def read_event_name(filename):
-    with open(filename, 'rb') as f:
-        # First is junk
-        f.read(39)
-        length = struct.unpack('<B', f.read(1))[0]
-        s = struct.unpack('<%ds' % length, f.read(length))
-        s = s[0].strip().decode('ascii')[17:]
-    return s
-
+import utils
+import os
 
 def load_analyzers():
     global analyzers
@@ -61,24 +53,29 @@ def find_relevant_time(records):
         return [enabled_period[0], stop_index]
 
 
-def save_graph(filename):
+def generate_graph(dslog, eventlog):
     print("Reading data...", end="", flush=True)
     start = time.time()
-    parser = DSLogParser(filename)
+    parser = DSLogParser(dslog)
     records = parser.read_records()
     df = pd.DataFrame(records)
     elapsed = time.time() - start
     print("Done [Took %2.2f seconds]" % elapsed)
 
-    print(read_event_name(logs_folder + events_filename))
-    plotter.plot_all(df, save=True, show=True, log_name=filename)
+    print(utils.read_event_name(eventlog))
+    plotter.plot_all(df, save=True, show=True, log_name=os.path.split(dslog)[1])
 
 
 
-logs_folder = 'C:/Users/Sketch Bros 2/Documents/Programming/frc-log-analyzer/Logs/White night 20190308/'
+logs_folder = 'f:/Users/Nitay/Dropbox/Work/First FRC/2019/Logs/District 4/Day 2/'
 #logs_folder = 'Logs/White night 20190308/'
-log_filename = '2019_03_08 03_34_49 Fri.dslog'
-events_filename = log_filename.replace('dslog', 'dsevents')
+logs_filenames = [
+    'Elimination-19_1__2019_03_14 16_48_33 Thu.dslog',
+    'Elimination-19_1__2019_03_14 17_12_07 Thu.dslog',
+    'Elimination-20_1__2019_03_14 17_13_39 Thu.dslog',
+    'Elimination-21_1__2019_03_14 17_23_35 Thu.dslog',
+]
+events_filenames = [s.replace('dslog', 'dsevents') for s in logs_filenames]
 
 analyzers = []
 
@@ -89,8 +86,8 @@ if __name__ == "__main__":
     # Set this to false if you want to see disabled periods
     IGNORE_DISBALED = True
 
-    file = logs_folder + log_filename
-    save_graph(file)
+    for dslog, event_log in zip(logs_filenames, events_filenames):
+        generate_graph(logs_folder + dslog, logs_folder + event_log)
     # for file in glob.glob(logs_folder + '*.dslog'):
     #     print(file)
     #     save_graph(file)

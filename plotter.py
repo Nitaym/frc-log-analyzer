@@ -44,8 +44,7 @@ def plot_all(records, save=False, show=True, log_name=''):
              '13 Drive Right',
              '14 Drive Right',
              '15 Spare']
-    plt.figure()
-    plt.title(log_name)
+    fig = plt.figure()
     for i in range(16):
         voltage_color = 'red'
         current_color = 'blue'
@@ -64,13 +63,16 @@ def plot_all(records, save=False, show=True, log_name=''):
         ax2 = ax1.twinx()
 
         currents = records['pdp_currents']
-        current = [c[15-i] for c in currents]
+        current = [c[i] for c in currents]
         ax2.plot(time, current, color=current_color)
         ax2.set_ylabel(names[i], color=current_color)
         ax2.tick_params(axis='y', labelcolor=current_color)
 
         # make_frc_plot('Voltage vs Current', records)
         # plt.tight_layout()
+
+    # fig.subtitle(log_name[:log_name.find('__')])
+
     if show:
         plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
         plt.show()
